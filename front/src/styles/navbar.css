@@ -1,0 +1,6 @@
+nav {
+  grid-row: 1 / 2;
+  background-color: red;
+  display: flex;
+  justify-content: flex-end;
+}

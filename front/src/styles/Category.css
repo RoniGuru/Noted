@@ -1,0 +1,62 @@
+.category-form {
+  height: 20vh;
+  width: 30vh;
+  background-color: blue;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 1;
+}
+
+.category-form-background {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2; /* Optional: ensure it is on top of other elements */
+}
+
+.category-form input {
+  width: 80%;
+}
+
+.category-form select {
+  width: 82%;
+}
+
+.category {
+  padding: 5%;
+  width: 80%;
+
+  border-radius: 5%;
+  border: 2px black solid;
+  display: flex;
+  justify-content: space-between;
+  margin-left: 5%;
+  margin-bottom: 5%;
+}
+
+.category-buttons {
+  display: flex;
+  justify-content: space-between;
+
+  height: 100%;
+
+  width: 30%;
+  align-items: center;
+}
+
+.category-button {
+  color: black;
+}
+.category-button:hover {
+  opacity: 0.5;
+}
