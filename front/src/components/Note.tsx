@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { NoteIF, categoryIF } from '../pages/Home';
+import { NoteIF, categoryIF } from '../utils/interfaces';
 import api from '../api';
 import '../styles/Note.css';
 
@@ -66,14 +66,7 @@ const Note: React.FC<NoteProps> = ({
   };
 
   return (
-    <div
-      key={note.id}
-      style={{
-        backgroundColor: categories.find((item) => item.id === note.category)
-          ?.color,
-      }}
-      className="note-container"
-    >
+    <div key={note.id} className="note-container">
       <input
         type="text"
         value={title}

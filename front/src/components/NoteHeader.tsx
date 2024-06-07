@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
-import { NoteIF, categoryIF } from '../pages/Home';
+import { NoteIF, categoryIF } from '../utils/interfaces';
 import '../styles/Note.css';
+import { TiDelete } from 'react-icons/ti';
 
 interface NoteProps {
   note: NoteIF;
   category: categoryIF | undefined;
   noteDelete: (id: number) => void;
-
+  current: boolean;
   setCurrentNoteID: React.Dispatch<React.SetStateAction<number | null>>;
 }
 
@@ -14,29 +15,29 @@ const NoteHeader: React.FC<NoteProps> = ({
   note,
   noteDelete,
   category,
+  current,
   setCurrentNoteID,
 }) => {
-  const [title, setTitle] = React.useState<string>('');
-
-  useEffect(() => {
-    setTitle(note.title);
-  }, []);
-
   return (
     <div
       key={note.id}
-      style={{ backgroundColor: category?.color || 'grey' }}
+      style={{
+        borderBottom: category
+          ? category?.color + ' 5px solid'
+          : 'grey' + ' 5px solid',
+        backgroundColor: current ? category?.color || 'grey' : 'transparent',
+      }}
       className="note-header"
     >
-      <div>{title}</div>
+      <div> {note.title}</div>
 
-      <button
+      <TiDelete
+        size={30}
+        className="note-header-delete"
         onClick={() => {
           noteDelete(note.id), setCurrentNoteID(null);
         }}
-      >
-        delete
-      </button>
+      />
     </div>
   );
 };

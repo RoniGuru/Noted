@@ -116,9 +116,10 @@ function Home() {
             <input
               type="text"
               onChange={(e) => setSearchCategories(e.target.value)}
+              placeholder="Search for categories"
             />
             <button onClick={() => setCategoryPopUp(!categoryPopUp)}>
-              create Category
+              Create Category
             </button>
           </div>
           <CreateCategory
@@ -130,7 +131,11 @@ function Home() {
           <div className="scroll categories">
             <div
               key="none"
-              style={{ backgroundColor: 'grey' }}
+              style={{
+                border: '5px grey solid',
+                backgroundColor:
+                  currentCategoryID === null ? 'grey' : 'transparent',
+              }}
               className="category"
               onClick={() => setCurrentCategoryID(null)}
             >
@@ -148,8 +153,9 @@ function Home() {
                     key={index}
                     colorChoices={colorChoices}
                     deleteCategory={deleteCategory}
-                    category={categories[index]}
+                    category={category}
                     getCategories={getCategories}
+                    current={currentCategoryID}
                   />
                 </div>
               ))}
@@ -158,8 +164,7 @@ function Home() {
         </div>
         <div className="note-headers-column ">
           <div className="note-header-bar">
-            <div> {currentCategory ? currentCategory.name : 'all'}</div>
-            <input type="text" name="" id="" />
+            <input type="text" name="" id="" placeholder="Search for notes" />
             <button onClick={() => setNoteCategoryPopUp(!noteCategoryPopUp)}>
               create Note
             </button>
@@ -184,6 +189,7 @@ function Home() {
                         )}
                         noteDelete={deleteNote}
                         key={note.id}
+                        current={currentNoteID === note.id}
                         setCurrentNoteID={() => setCurrentNoteID(null)}
                       />
                     </div>
@@ -197,6 +203,7 @@ function Home() {
                       )}
                       noteDelete={deleteNote}
                       key={note.id}
+                      current={currentNoteID === note.id}
                       setCurrentNoteID={() => setCurrentNoteID(null)}
                     />
                   </div>

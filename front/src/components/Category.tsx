@@ -1,5 +1,5 @@
-import React from 'react';
-import { categoryIF, ColorChoice } from '../pages/Home';
+import { useState } from 'react';
+import { categoryIF, ColorChoice } from '../utils/interfaces';
 import '../styles/Category.css';
 import api from '../api';
 import EditCategory from '../components/EditCategory';
@@ -11,6 +11,7 @@ interface CategoriesProps {
   deleteCategory: (id: number) => void;
   colorChoices: ColorChoice[];
   getCategories: () => void;
+  current: number | null;
 }
 
 const Category: React.FC<CategoriesProps> = ({
@@ -18,8 +19,9 @@ const Category: React.FC<CategoriesProps> = ({
   deleteCategory,
   colorChoices,
   getCategories,
+  current,
 }) => {
-  const [categoryPopUp, setCategoryPopUp] = React.useState<boolean>(false);
+  const [categoryPopUp, setCategoryPopUp] = useState<boolean>(false);
 
   const updateCategory = async (
     id: number | undefined,
@@ -38,7 +40,17 @@ const Category: React.FC<CategoriesProps> = ({
   };
 
   return (
-    <div className="category" style={{ backgroundColor: category.color }}>
+    <div
+      className={`category ${categoryPopUp ? 'category-form-active' : ''}`}
+      style={{
+        border: category.color + ' 5px solid',
+        backgroundColor:
+          current === category.id ? category.color : 'transparent',
+      }}
+      onClick={() => {
+        console.log(current, category.id);
+      }}
+    >
       <div>{category!.name}</div>
       <div className="category-buttons">
         <RiEditCircleFill

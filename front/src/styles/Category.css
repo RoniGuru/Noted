@@ -8,7 +8,9 @@
   align-items: center;
   z-index: 1;
 }
-
+.category-form-active:hover {
+  opacity: 1 !important; /* Ensure opacity is normal when the form is active */
+}
 .category-form-background {
   position: absolute;
   top: 0;
@@ -36,12 +38,14 @@
   padding: 5%;
   width: 80%;
 
-  border-radius: 5%;
-  border: 2px black solid;
   display: flex;
   justify-content: space-between;
   margin-left: 5%;
-  margin-bottom: 5%;
+  border-radius: 10px;
+  align-items: center;
+}
+.category:hover {
+  opacity: 0.5;
 }
 
 .category-buttons {
@@ -55,8 +59,8 @@
 }
 
 .category-button {
-  color: black;
+  color: white;
 }
 .category-button:hover {
-  opacity: 0.5;
+  scale: 1.4;
 }

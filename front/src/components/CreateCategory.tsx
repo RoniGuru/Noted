@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import api from '../api';
 import '../styles/Category.css';
-import { ColorChoice } from '../pages/Home';
+import { ColorChoice } from '../utils/interfaces';
 
 interface CreateCategoryProps {
   trigger: boolean;
