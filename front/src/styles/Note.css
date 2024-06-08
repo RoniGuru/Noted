@@ -19,17 +19,50 @@
 
 .note-container {
   height: 95%;
-  width: 90%;
+  width: 99%;
   margin: auto;
   display: flex;
   flex-direction: column;
 
   align-items: center;
+  border: 2px white solid;
 }
 
+.note-container button {
+  border: 0;
+  outline: 0;
+  border-radius: 5px;
+  padding: 10px;
+}
+.note-container-top {
+  margin-top: 2%;
+  width: 80%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.note-container-top .note-header-delete {
+  margin-right: 0;
+}
+.note-title {
+  margin-top: 2%;
+  width: 80%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.note-title select {
+  width: 15%;
+  height: 100%;
+  outline: 0;
+  border: 0;
+  border-radius: 5px;
+}
 .note-container input {
   width: 80%;
-  height: 10%;
+  height: 100%;
   font-size: 40px;
   background-color: transparent;
   color: white;
@@ -47,16 +80,36 @@
 }
 
 .note-form {
-  height: 30vh;
-  width: 30vh;
-  background-color: blue;
+  height: 60vh;
+  width: 50vh;
+  background-color: #708090;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
   z-index: 1;
 }
+.note-form button {
+  padding: 0;
+  margin: 0;
+  height: 10% !important;
+}
 
+.note-form input {
+  padding: 0;
+  height: 5% !important;
+  width: 80% !important;
+  margin: 0;
+}
+
+.note-form select {
+  padding: 0;
+  height: 5% !important;
+  margin: 0;
+  outline: 0;
+  border: 0;
+  border-radius: 5px;
+}
 .note-form-background {
   position: absolute;
   top: 0;
@@ -78,4 +131,8 @@
 
 .note-form select {
   width: 82%;
+}
+
+.note-bottom {
+  margin-bottom: 2%;
 }

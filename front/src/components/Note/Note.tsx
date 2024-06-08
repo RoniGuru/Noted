@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
-import { NoteIF, categoryIF } from '../utils/interfaces';
-import api from '../api';
-import '../styles/Note.css';
+import { NoteIF, categoryIF } from '../../utils/interfaces';
+import api from '../../api';
+import '../../styles/Note.css';
+import { TiDelete } from 'react-icons/ti';
 
 interface NoteProps {
   note: NoteIF;
@@ -67,24 +68,23 @@ const Note: React.FC<NoteProps> = ({
 
   return (
     <div key={note.id} className="note-container">
-      <input
-        type="text"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-      />
-      <textarea
-        value={body}
-        onChange={(e) => setBody(e.target.value)}
-      ></textarea>
-      <div>
-        <button
+      <div className="note-container-top">
+        <button onClick={() => reset()}>reset</button>
+
+        <TiDelete
+          size={30}
+          className="note-header-delete"
           onClick={() => {
             noteDelete(note.id), setCurrentNoteID(null);
           }}
-        >
-          delete
-        </button>
-
+        />
+      </div>
+      <div className="note-title">
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
         <select
           id="choices"
           value={
@@ -101,7 +101,13 @@ const Note: React.FC<NoteProps> = ({
             </option>
           ))}
         </select>
+      </div>
 
+      <textarea
+        value={body}
+        onChange={(e) => setBody(e.target.value)}
+      ></textarea>
+      <div className="note-bottom">
         <button
           onClick={() => {
             updateNote(note.id, title, body, category);
@@ -109,7 +115,6 @@ const Note: React.FC<NoteProps> = ({
         >
           update
         </button>
-        <button onClick={() => reset()}>reset</button>
       </div>
     </div>
   );

@@ -1,111 +1,41 @@
-import { useState, useEffect } from 'react';
-import CreateNote from '../components/CreateNote';
-import api from '../api';
+import { useState } from 'react';
 
-import CreateCategory from '../components/CreateCategory';
-import Note from '../components/Note';
-
+import CreateCategory from '../components/Category/CreateCategory';
+import Note from '../components/Note/Note';
+import CreateNote from '../components/Note/CreateNote';
 import '../styles/Home.css';
-import Category from '../components/Category';
-import NoteHeader from '../components/NoteHeader';
+import Category from '../components/Category/Category';
+import NoteHeader from '../components/Note/NoteHeader';
 import Navbar from '../components/Navbar';
-import { useMemo } from 'react';
-import { NoteIF, categoryIF, ColorChoice } from '../utils/interfaces';
+import useColor from '../hooks/colorHook';
+import useCategory from '../hooks/categoryHooks';
+import useNote from '../hooks/noteHooks';
 
 function Home() {
-  const [colorChoices, setColorChoices] = useState<ColorChoice[]>([]);
-  const [categories, SetCategories] = useState<categoryIF[]>([]);
   const [categoryPopUp, setCategoryPopUp] = useState<boolean>(false);
-  const [noteCategoryPopUp, setNoteCategoryPopUp] = useState<boolean>(false);
+  const [notePopUp, setNotePopUp] = useState<boolean>(false);
+
+  const { colorChoices } = useColor();
+  const {
+    categories,
+    getCategories,
+    currentCategory,
+    setCurrentCategoryID,
+    currentCategoryID,
+    updateCategory,
+    deleteCategory,
+  } = useCategory();
+  const {
+    notes,
+    getNotes,
+    currentNote,
+    setCurrentNoteID,
+    updateNote,
+    deleteNote,
+  } = useNote();
 
   const [searchCategories, setSearchCategories] = useState<string>('');
-
-  const [notes, setNotes] = useState<NoteIF[]>([]);
-
-  const [currentCategoryID, setCurrentCategoryID] = useState<number | null>(
-    null
-  );
-  const currentCategory: categoryIF | undefined = useMemo(
-    () => categories.find((category) => category.id === currentCategoryID),
-    [currentCategoryID, categories]
-  );
-
-  const [currentNoteID, setCurrentNoteID] = useState<number | null>(null);
-
-  const currentNote: NoteIF | undefined = useMemo(
-    () => notes.find((note) => note.id === currentNoteID),
-    [currentNoteID, notes]
-  );
-
-  useEffect(() => {
-    getCategories();
-    getNotes();
-    getColorChoices();
-  }, []);
-
-  const getColorChoices = async () => {
-    api
-      .get('/base/color-choices/')
-      .then((response) => {
-        setColorChoices(response.data);
-      })
-      .catch((error) => console.error('Error fetching color choices:', error));
-  };
-
-  const getCategories = async () => {
-    api.get('/base/categories/').then((response) => {
-      SetCategories(response.data);
-    });
-  };
-
-  const deleteCategory = async (id: number) => {
-    api
-      .delete(`/base/categories/delete/${id}/`)
-      .then((res) => {
-        if (res.status === 204) {
-          getCategories();
-        }
-      })
-      .catch((err) => alert(err));
-  };
-
-  const getNotes = async () => {
-    api
-      .get('base/notes/')
-      .then((res) => res.data)
-      .then((data) => {
-        setNotes(data);
-      })
-      .catch((err) => alert(err));
-  };
-
-  const deleteNote = async (id: number) => {
-    api
-      .delete(`/base/notes/delete/${id}/`)
-      .then((res) => {
-        if (res.status === 204) {
-          getNotes();
-        }
-      })
-      .catch((err) => alert(err));
-  };
-
-  const updateNote = async (id: number) => {
-    api
-      .put(`/base/notes/update/${id}/`)
-      .then((res) => {
-        if (res.status === 204) {
-          getNotes();
-        }
-      })
-      .catch((err) => alert(err));
-  };
-
-  localStorage.setItem('CATEGORIES', JSON.stringify(categories));
-  localStorage.setItem('NOTES', JSON.stringify(notes));
-
-  const test = localStorage.getItem('CATEGORIES');
-  const test2 = localStorage.getItem('NOTES');
+  const [searchNotes, setSearchNotes] = useState<string>('');
 
   return (
     <div className="home">
@@ -156,21 +86,28 @@ function Home() {
                     category={category}
                     getCategories={getCategories}
                     current={currentCategoryID}
+                    updateCategory={updateCategory}
                   />
                 </div>
               ))}
           </div>
-          <div>sync</div>
+          <div></div>
         </div>
         <div className="note-headers-column ">
           <div className="note-header-bar">
-            <input type="text" name="" id="" placeholder="Search for notes" />
-            <button onClick={() => setNoteCategoryPopUp(!noteCategoryPopUp)}>
+            <input
+              type="text"
+              name=""
+              id=""
+              placeholder="Search for notes"
+              onChange={(e) => setSearchNotes(e.target.value)}
+            />
+            <button onClick={() => setNotePopUp(!notePopUp)}>
               create Note
             </button>
             <CreateNote
-              trigger={noteCategoryPopUp}
-              setTrigger={setNoteCategoryPopUp}
+              trigger={notePopUp}
+              setTrigger={setNotePopUp}
               categories={categories}
               getNotes={getNotes}
             />
@@ -179,7 +116,11 @@ function Home() {
           <div className="notes scroll">
             {currentCategory
               ? notes
-                  .filter((note) => note.category === currentCategoryID)
+                  .filter(
+                    (note) =>
+                      note.category === currentCategoryID &&
+                      note.title.includes(searchNotes)
+                  )
                   .map((note) => (
                     <div onClick={() => setCurrentNoteID(note.id)}>
                       <NoteHeader
@@ -189,25 +130,27 @@ function Home() {
                         )}
                         noteDelete={deleteNote}
                         key={note.id}
-                        current={currentNoteID === note.id}
+                        current={currentNote?.id === note.id ? true : false}
                         setCurrentNoteID={() => setCurrentNoteID(null)}
                       />
                     </div>
                   ))
-              : notes.map((note) => (
-                  <div onClick={() => setCurrentNoteID(note.id)}>
-                    <NoteHeader
-                      note={note}
-                      category={categories.find(
-                        (item) => item.id === note.category
-                      )}
-                      noteDelete={deleteNote}
-                      key={note.id}
-                      current={currentNoteID === note.id}
-                      setCurrentNoteID={() => setCurrentNoteID(null)}
-                    />
-                  </div>
-                ))}
+              : notes
+                  .filter((note) => note.title.includes(searchNotes))
+                  .map((note) => (
+                    <div onClick={() => setCurrentNoteID(note.id)}>
+                      <NoteHeader
+                        note={note}
+                        category={categories.find(
+                          (item) => item.id === note.category
+                        )}
+                        noteDelete={deleteNote}
+                        key={note.id}
+                        current={currentNote?.id === note.id ? false : false}
+                        setCurrentNoteID={() => setCurrentNoteID(null)}
+                      />
+                    </div>
+                  ))}
           </div>
         </div>
         <div className="note-column">

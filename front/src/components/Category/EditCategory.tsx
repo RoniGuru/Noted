@@ -1,15 +1,15 @@
 import React from 'react';
-import { ColorChoice, categoryIF } from '../pages/Home';
+import { categoryIF, ColorChoice } from '../../utils/interfaces';
 import { useState } from 'react';
 
-import '../styles/Category.css';
+import '../../styles/Category.css';
 
 interface EditCategoryProps {
   trigger: boolean;
   setTrigger: React.Dispatch<React.SetStateAction<boolean>>;
   colorChoices: ColorChoice[];
   category: categoryIF | undefined;
-  categoryUpdate: (id: number, itemName: string, itemColor: string) => void;
+  categoryUpdate: (updatedCategory: categoryIF) => void;
 }
 const EditCategory: React.FC<EditCategoryProps> = ({
   trigger,
@@ -20,12 +20,20 @@ const EditCategory: React.FC<EditCategoryProps> = ({
 }) => {
   const [name, setName] = useState<string>('');
   const [color, setColor] = useState<string>('');
+  const [updatedCategory, setUpdatedCategory] = useState<categoryIF | null>(
+    null
+  );
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
     const updatedName = name || category!.name;
     const updateColor = color || category!.color;
-    categoryUpdate(category!.id, updatedName, updateColor);
+    setUpdatedCategory({
+      id: category!.id,
+      name: updatedName,
+      color: updateColor,
+    });
+    categoryUpdate(updatedCategory!);
     setTrigger(false);
   };
 

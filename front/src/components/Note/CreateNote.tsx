@@ -1,8 +1,9 @@
 import React from 'react';
-import { categoryIF } from '../pages/Home';
+import { categoryIF } from '../../utils/interfaces';
 import { useState } from 'react';
-import api from '../api';
-import '../styles/Note.css';
+import api from '../../api';
+import '../../styles/Note.css';
+import { TiDelete } from 'react-icons/ti';
 
 interface CreateNoteProps {
   categories: categoryIF[];
@@ -53,7 +54,8 @@ const CreateNote: React.FC<CreateNoteProps> = ({
             className="note-form"
             onClick={(e) => e.stopPropagation()}
           >
-            <button onClick={() => setTrigger(false)}>close</button>
+            <TiDelete onClick={() => setTrigger(false)} size={80} />
+
             <label htmlFor="title">Note title</label>
             <input
               type="text"

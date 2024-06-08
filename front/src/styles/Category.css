@@ -1,12 +1,31 @@
 .category-form {
-  height: 20vh;
+  height: 30vh;
   width: 30vh;
-  background-color: blue;
+  background-color: #708090;
+  border-radius: 5px;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
   z-index: 1;
+}
+.category-form input {
+  outline: none;
+  border: none;
+  border-radius: 5px;
+}
+
+.category-form select {
+  outline: none;
+  border: none;
+  border-radius: 5px;
+}
+
+.category-form button {
+  outline: none;
+  border: none;
+  border-radius: 5px;
+  padding: 5px;
 }
 .category-form-active:hover {
   opacity: 1 !important; /* Ensure opacity is normal when the form is active */

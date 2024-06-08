@@ -1,6 +1,16 @@
 nav {
   grid-row: 1 / 2;
-  background-color: red;
+
   display: flex;
   justify-content: flex-end;
+  align-items: center;
+}
+
+nav button {
+  border: 0;
+  outline: 0;
+  border-radius: 5px;
+  padding: 10px;
+  height: 80%;
+  margin-right: 5%;
 }

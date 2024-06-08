@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react';
-import { NoteIF, categoryIF } from '../utils/interfaces';
-import '../styles/Note.css';
+import { NoteIF, categoryIF } from '../../utils/interfaces';
+import '../../styles/Note.css';
 import { TiDelete } from 'react-icons/ti';
 
 interface NoteProps {

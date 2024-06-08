@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import api from '../api';
-import '../styles/Category.css';
-import { ColorChoice } from '../utils/interfaces';
+import api from '../../api';
+import '../../styles/Category.css';
+import { ColorChoice } from '../../utils/interfaces';
+import { TiDelete } from 'react-icons/ti';
 
 interface CreateCategoryProps {
   trigger: boolean;
@@ -52,7 +53,7 @@ const CreateCategory: React.FC<CreateCategoryProps> = ({
           onClick={() => setTrigger(false)}
         >
           <form className="category-form" onClick={(e) => e.stopPropagation()}>
-            <button onClick={() => setTrigger(false)}>close</button>
+            <TiDelete onClick={() => setTrigger(false)} size={40} />
             <input
               className="form-input"
               type="text"

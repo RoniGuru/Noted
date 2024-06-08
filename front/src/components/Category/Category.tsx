@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { categoryIF, ColorChoice } from '../utils/interfaces';
-import '../styles/Category.css';
-import api from '../api';
-import EditCategory from '../components/EditCategory';
+import { categoryIF, ColorChoice } from '../../utils/interfaces';
+import '../../styles/Category.css';
+
+import EditCategory from './EditCategory';
 import { TiDelete } from 'react-icons/ti';
 import { RiEditCircleFill } from 'react-icons/ri';
 
@@ -12,32 +12,17 @@ interface CategoriesProps {
   colorChoices: ColorChoice[];
   getCategories: () => void;
   current: number | null;
+  updateCategory: (updatedCategory: categoryIF) => void;
 }
 
 const Category: React.FC<CategoriesProps> = ({
   category,
   deleteCategory,
   colorChoices,
-  getCategories,
   current,
+  updateCategory,
 }) => {
   const [categoryPopUp, setCategoryPopUp] = useState<boolean>(false);
-
-  const updateCategory = async (
-    id: number | undefined,
-    itemName: string,
-    itemColor: string
-  ) => {
-    api
-      .put(`/base/categories/update/${id}/`, {
-        name: itemName,
-        color: itemColor,
-      })
-      .then(() => {
-        getCategories();
-      })
-      .catch((err) => alert(err));
-  };
 
   return (
     <div
