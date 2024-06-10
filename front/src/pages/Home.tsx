@@ -3,7 +3,7 @@ import { useState } from 'react';
 import CreateCategory from '../components/Category/CreateCategory';
 import Note from '../components/Note/Note';
 import CreateNote from '../components/Note/CreateNote';
-import '../styles/Home.css';
+
 import Category from '../components/Category/Category';
 import NoteHeader from '../components/Note/NoteHeader';
 import Navbar from '../components/Navbar';
@@ -24,31 +24,37 @@ function Home() {
     currentCategoryID,
     updateCategory,
     deleteCategory,
+    createCategory,
   } = useCategory();
   const {
     notes,
     getNotes,
     currentNote,
     setCurrentNoteID,
-    updateNote,
+    createNote,
     deleteNote,
+    updateNote,
   } = useNote();
 
   const [searchCategories, setSearchCategories] = useState<string>('');
   const [searchNotes, setSearchNotes] = useState<string>('');
 
   return (
-    <div className="home">
+    <div className="font-mono">
       <Navbar />
-      <div className="home-container">
-        <div className="category-column ">
-          <div className="search">
+      <div className="grid grid-cols-4 gap-4 mt-2 ml-3 mr-4">
+        <div className="col-span-1  p-4 shadow-md bg-gray-400 rounded ">
+          <div className="search mb-4  flex ">
             <input
               type="text"
               onChange={(e) => setSearchCategories(e.target.value)}
               placeholder="Search for categories"
+              className="flex-grow bg-gray-200 outline-none pl-2"
             />
-            <button onClick={() => setCategoryPopUp(!categoryPopUp)}>
+            <button
+              onClick={() => setCategoryPopUp(!categoryPopUp)}
+              className="bg-gray-300 hover:bg-gray-500 text-gray-800 font-bold py-2 px-4 rounded-r"
+            >
               Create Category
             </button>
           </div>
@@ -56,9 +62,9 @@ function Home() {
             trigger={categoryPopUp}
             setTrigger={setCategoryPopUp}
             colorChoices={colorChoices}
-            getCategories={getCategories}
+            createCategory={createCategory}
           />
-          <div className="scroll categories">
+          <div className="scroll">
             <div
               key="none"
               style={{
@@ -66,10 +72,16 @@ function Home() {
                 backgroundColor:
                   currentCategoryID === null ? 'grey' : 'transparent',
               }}
-              className="category"
+              className=" items-center p-6 rounded-lg shadow    hover:shadow-2xl w-11/12"
               onClick={() => setCurrentCategoryID(null)}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'grey';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+              }}
             >
-              all
+              <div className="ml-4">all</div>
             </div>
 
             {categories
@@ -78,6 +90,7 @@ function Home() {
                 <div
                   onClick={() => setCurrentCategoryID(category.id)}
                   key={index}
+                  className="w-11/12"
                 >
                   <Category
                     key={index}
@@ -91,25 +104,26 @@ function Home() {
                 </div>
               ))}
           </div>
-          <div></div>
         </div>
-        <div className="note-headers-column ">
-          <div className="note-header-bar">
+        <div className="col-span-1  p-4 shadow-md  bg-gray-400 rounded">
+          <div className="flex">
             <input
               type="text"
-              name=""
-              id=""
+              className="flex-grow bg-gray-200 outline-none  pl-2"
               placeholder="Search for notes"
               onChange={(e) => setSearchNotes(e.target.value)}
             />
-            <button onClick={() => setNotePopUp(!notePopUp)}>
-              create Note
+            <button
+              onClick={() => setNotePopUp(!notePopUp)}
+              className="bg-gray-300 hover:bg-gray-500 text-gray-800 font-bold py-2 px-4 rounded-r"
+            >
+              Create Note
             </button>
             <CreateNote
               trigger={notePopUp}
               setTrigger={setNotePopUp}
               categories={categories}
-              getNotes={getNotes}
+              createNote={createNote}
             />
           </div>
 
@@ -122,48 +136,44 @@ function Home() {
                       note.title.includes(searchNotes)
                   )
                   .map((note) => (
-                    <div onClick={() => setCurrentNoteID(note.id)}>
-                      <NoteHeader
-                        note={note}
-                        category={categories.find(
-                          (item) => item.id === note.category
-                        )}
-                        noteDelete={deleteNote}
-                        key={note.id}
-                        current={currentNote?.id === note.id ? true : false}
-                        setCurrentNoteID={() => setCurrentNoteID(null)}
-                      />
-                    </div>
+                    <NoteHeader
+                      note={note}
+                      category={categories.find(
+                        (item) => item.id === note.category
+                      )}
+                      noteDelete={deleteNote}
+                      key={note.id}
+                      current={currentNote?.id === note.id ? true : false}
+                      setCurrentNoteID={setCurrentNoteID}
+                    />
                   ))
               : notes
                   .filter((note) => note.title.includes(searchNotes))
                   .map((note) => (
-                    <div onClick={() => setCurrentNoteID(note.id)}>
-                      <NoteHeader
-                        note={note}
-                        category={categories.find(
-                          (item) => item.id === note.category
-                        )}
-                        noteDelete={deleteNote}
-                        key={note.id}
-                        current={currentNote?.id === note.id ? false : false}
-                        setCurrentNoteID={() => setCurrentNoteID(null)}
-                      />
-                    </div>
+                    <NoteHeader
+                      note={note}
+                      category={categories.find(
+                        (item) => item.id === note.category
+                      )}
+                      noteDelete={deleteNote}
+                      key={note.id}
+                      current={currentNote?.id === note.id ? true : false}
+                      setCurrentNoteID={setCurrentNoteID}
+                    />
                   ))}
           </div>
         </div>
-        <div className="note-column">
+        <div className="col-span-2 bg-gray-400 rounded p-4 shadow-md">
           {currentNote ? (
             <Note
               note={currentNote}
               categories={categories}
               noteDelete={deleteNote}
-              noteUpdate={updateNote}
               getNotes={getNotes}
               key={currentNote.id}
               setCurrentNoteID={setCurrentNoteID}
               setCurrentCategoryID={setCurrentCategoryID}
+              updateNote={updateNote}
             />
           ) : null}
         </div>

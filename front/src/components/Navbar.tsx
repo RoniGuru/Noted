@@ -19,8 +19,13 @@ const getUser = async () => {
 function Navbar() {
   const navigate = useNavigate();
   return (
-    <nav>
-      <button onClick={() => navigate('/logout')}>logout</button>
+    <nav className="w-full  ">
+      <button
+        onClick={() => navigate('/logout')}
+        className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded mt-4 ml-auto"
+      >
+        logout
+      </button>
     </nav>
   );
 }

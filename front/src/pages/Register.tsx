@@ -2,7 +2,7 @@ import FormTemplate from '../components/FormTemplate';
 
 function Register() {
   return (
-    <div>
+    <div className="flex justify-center items-center h-screen">
       <FormTemplate method="Register" route="/base/user/register/" />
     </div>
   );

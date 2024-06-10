@@ -1,69 +1,63 @@
 import { useState, useEffect } from 'react';
-import api from '../../api';
-import '../../styles/Category.css';
+
 import { ColorChoice } from '../../utils/interfaces';
 import { TiDelete } from 'react-icons/ti';
+import '../../styles/CreateCategory.css';
 
 interface CreateCategoryProps {
   trigger: boolean;
   setTrigger: React.Dispatch<React.SetStateAction<boolean>>;
   colorChoices: ColorChoice[];
-
-  getCategories: () => void;
+  createCategory: (categoryName: string, categoryColor: string) => void;
 }
 
 const CreateCategory: React.FC<CreateCategoryProps> = ({
   trigger,
   setTrigger,
-
   colorChoices,
-  getCategories,
+  createCategory,
 }) => {
   const [name, setName] = useState<string>('');
   const [color, setColor] = useState<string>('');
+
   useEffect(() => {
     if (colorChoices.length > 0) {
       setColor(colorChoices[0].value);
     }
   }, [colorChoices]);
 
-  const createCategory = (e: any) => {
+  const handleSubmit = (e: any) => {
     e.preventDefault();
-    try {
-      api
-        .post('/base/categories/', { name, color })
-        .then((res) => {
-          if (res.status === 201) setTrigger(false), getCategories();
-          else alert('failed to make category');
-        })
-        .catch((err) => {
-          alert(err), console.log('its over');
-        });
-    } catch (err: any) {
-      alert('An error occurred: ' + err.message);
-      console.log('Error details:', err);
-    }
+    createCategory(name, color);
+    setTrigger(false);
   };
 
   return (
     <>
       {trigger ? (
         <div
-          className="category-form-background"
+          className="create-form-background flex"
           onClick={() => setTrigger(false)}
         >
-          <form className="category-form" onClick={(e) => e.stopPropagation()}>
-            <TiDelete onClick={() => setTrigger(false)} size={40} />
+          <form
+            className="create-form   shadow-md rounded px-8 pt-6 pb-8 mb-4   "
+            onClick={(e) => e.stopPropagation()}
+          >
+            <TiDelete
+              onClick={() => setTrigger(false)}
+              size={40}
+              className="icon-button  ml-auto"
+            />
             <input
-              className="form-input"
+              className=" mt-6 shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               type="text"
               name="name"
               onChange={(e) => setName(e.target.value)}
             />
             <select
-              className="form-input"
               id="color"
               name="color"
+              className="py-2 px-4 rounded w-full mt-6"
               onChange={(e) => setColor(e.target.value)}
             >
               {colorChoices.map((choice) => (
@@ -73,7 +67,12 @@ const CreateCategory: React.FC<CreateCategoryProps> = ({
               ))}
             </select>
 
-            <button onClick={createCategory}>create category</button>
+            <button
+              onClick={handleSubmit}
+              className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l mt-6  "
+            >
+              create category
+            </button>
           </form>
         </div>
       ) : null}

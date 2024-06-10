@@ -1,18 +1,17 @@
 import React, { useEffect } from 'react';
 import { NoteIF, categoryIF } from '../../utils/interfaces';
-import api from '../../api';
-import '../../styles/Note.css';
+
 import { TiDelete } from 'react-icons/ti';
 
 interface NoteProps {
   note: NoteIF;
   categories: categoryIF[];
   noteDelete: (id: number) => void;
-  noteUpdate: (id: number) => void;
 
   setCurrentNoteID: React.Dispatch<React.SetStateAction<number | null>>;
   getNotes: () => void;
   setCurrentCategoryID: React.Dispatch<React.SetStateAction<number | null>>;
+  updateNote: (note: NoteIF) => void;
 }
 
 const Note: React.FC<NoteProps> = ({
@@ -20,8 +19,8 @@ const Note: React.FC<NoteProps> = ({
   categories,
   noteDelete,
   setCurrentNoteID,
-  getNotes,
   setCurrentCategoryID,
+  updateNote,
 }) => {
   const [title, setTitle] = React.useState<string>('');
   const [body, setBody] = React.useState<string>('');
@@ -34,30 +33,22 @@ const Note: React.FC<NoteProps> = ({
     setBody(note.body);
   }, []);
 
-  const updateNote = async (
-    id: number,
-    title: string,
-    body: string,
-    category: number | undefined | null
-  ) => {
+  const handleSubmit = async () => {
     const updatedTitle = title || note.title;
     const updatedBody = body || note.body;
     const updatedCategory = category == 0 ? null : category || note.category;
 
-    api
-      .put(`/base/notes/update/${id}/`, {
-        title: updatedTitle,
-        body: updatedBody,
-        category: updatedCategory,
-      })
-      .then(() => {
-        setTitle(updatedTitle);
-        setBody(updatedBody);
-        setCategory(updatedCategory);
-        setCurrentCategoryID(updatedCategory);
-        getNotes();
-      })
-      .catch((err) => alert(err));
+    updateNote({
+      id: note.id,
+      title: updatedTitle,
+      body: updatedBody,
+      category: updatedCategory,
+    });
+
+    setTitle(updatedTitle);
+    setBody(updatedBody);
+    setCategory(updatedCategory);
+    setCurrentCategoryID(updatedCategory);
   };
 
   const reset = () => {
@@ -67,28 +58,37 @@ const Note: React.FC<NoteProps> = ({
   };
 
   return (
-    <div key={note.id} className="note-container">
-      <div className="note-container-top">
-        <button onClick={() => reset()}>reset</button>
+    <div key={note.id} className="flex flex-col h-full w-full">
+      <div className="  flex justify-between">
+        <button
+          onClick={() => reset()}
+          className="bg-gray-300 hover:bg-gray-500 text-gray-800 font-bold py-2 px-4 rounded"
+        >
+          reset
+        </button>
 
         <TiDelete
           size={30}
-          className="note-header-delete"
+          className="icon-button"
           onClick={() => {
             noteDelete(note.id), setCurrentNoteID(null);
           }}
         />
       </div>
-      <div className="note-title">
+      <div className="w-full flex justify-between items-center mt-2">
         <input
+          className="w-4/5  h-10 outline-none bg-transparent  pl-2 border-b-4"
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
         <select
+          className="h-10 outline-none rounded mr-2"
           id="choices"
           value={
-            category === null || category === 0 ? 0 : category || note.category
+            category === null || category === 0
+              ? 0
+              : category ?? note.category ?? 0
           }
           onChange={(e) => setCategory(Number(e.target.value))}
         >
@@ -104,14 +104,16 @@ const Note: React.FC<NoteProps> = ({
       </div>
 
       <textarea
+        className=" h-3/5 mt-2 rounded outline-none  pl-2 bg-transparent"
         value={body}
         onChange={(e) => setBody(e.target.value)}
-      ></textarea>
-      <div className="note-bottom">
+      />
+      <div className="ml-auto">
         <button
           onClick={() => {
-            updateNote(note.id, title, body, category);
+            handleSubmit();
           }}
+          className="bg-gray-300 hover:bg-gray-500 text-gray-800 font-bold py-2 px-4 rounded mt-4"
         >
           update
         </button>

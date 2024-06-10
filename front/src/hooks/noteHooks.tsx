@@ -15,6 +15,15 @@ const useNote = () => {
       .catch((err) => alert(err));
   };
 
+  const createNote = async (title: string, category: number | null) => {
+    api.post('/base/notes/', { title, body: '', category }).then((res) => {
+      if (res.status === 201) {
+        const updatedNotes = [...notes, res.data];
+        setNotes(updatedNotes);
+      }
+    });
+  };
+
   const deleteNote = async (id: number) => {
     api
       .delete(`/base/notes/delete/${id}/`)
@@ -26,15 +35,21 @@ const useNote = () => {
       .catch((err) => alert(err));
   };
 
-  const updateNote = async (id: number) => {
+  const updateNote = async (noteToUpdate: NoteIF) => {
     api
-      .put(`/base/notes/update/${id}/`)
-      .then((res) => {
-        if (res.status === 204) {
-          getNotes();
-        }
+      .put(`/base/notes/update/${noteToUpdate.id}/`, {
+        title: noteToUpdate.title,
+        body: noteToUpdate.body,
+        category: noteToUpdate.category,
       })
-      .catch((err) => alert(err));
+      .then((res) => {
+        if (res.status === 200) {
+          const updatedNotes = notes.map((note) =>
+            note.id === noteToUpdate.id ? noteToUpdate : note
+          );
+          setNotes(updatedNotes);
+        }
+      });
   };
 
   const [currentNoteID, setCurrentNoteID] = useState<number | null>(null);
@@ -53,6 +68,7 @@ const useNote = () => {
     currentNote,
     setCurrentNoteID,
     deleteNote,
+    createNote,
     updateNote,
   };
 };

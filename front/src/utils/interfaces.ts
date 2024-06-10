@@ -12,5 +12,5 @@ export interface NoteIF {
   id: number;
   title: string;
   body: string;
-  category: number;
+  category: number | null;
 }

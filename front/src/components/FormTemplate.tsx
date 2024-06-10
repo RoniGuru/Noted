@@ -33,34 +33,40 @@ const FormTemplate: React.FC<FormTemplateProps> = ({ route, method }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="form-container">
-      <h1>{name} </h1>
+    <form
+      onSubmit={handleSubmit}
+      className="flex justify-center bg-white  flex-col rounded p-8 gap-5 w-1/4 font-mono"
+    >
+      <h1 className="text-center">{name} </h1>
       <input
         type="text"
-        className="form-input"
+        className="form-input outline-none p-3"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
         placeholder="username"
       />
       <input
         type="password"
-        className="form-input"
+        className="form-input outline-none p-3"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         placeholder="password"
       />
 
-      <button className="form-button" type="submit">
+      <button
+        className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
+        type="submit"
+      >
         {name}
       </button>
 
       <button
-        className="form-button register-login"
+        className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded w-full"
         onClick={() =>
           method == 'login' ? navigate('/register') : navigate('/login')
         }
       >
-        {method == 'login' ? 'register' : 'login'}
+        {method == 'login' ? 'sign up' : ' already signed up? login'}
       </button>
     </form>
   );

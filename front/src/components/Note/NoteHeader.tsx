@@ -1,5 +1,5 @@
 import { NoteIF, categoryIF } from '../../utils/interfaces';
-import '../../styles/Note.css';
+
 import { TiDelete } from 'react-icons/ti';
 
 interface NoteProps {
@@ -21,18 +21,17 @@ const NoteHeader: React.FC<NoteProps> = ({
     <div
       key={note.id}
       style={{
-        borderBottom: category
-          ? category?.color + ' 5px solid'
-          : 'grey' + ' 5px solid',
+        border: category ? category?.color + ' 2px solid' : 'grey 2px solid',
         backgroundColor: current ? category?.color || 'grey' : 'transparent',
       }}
-      className="note-header"
+      className="flex justify-between p-4  rounded mt-4 w-11/12"
+      onClick={() => setCurrentNoteID(note.id)}
     >
       <div> {note.title}</div>
 
       <TiDelete
         size={30}
-        className="note-header-delete"
+        className="icon-button"
         onClick={() => {
           noteDelete(note.id), setCurrentNoteID(null);
         }}

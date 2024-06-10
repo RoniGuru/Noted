@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { categoryIF, ColorChoice } from '../../utils/interfaces';
-import '../../styles/Category.css';
 
 import EditCategory from './EditCategory';
 import { TiDelete } from 'react-icons/ti';
@@ -26,7 +25,9 @@ const Category: React.FC<CategoriesProps> = ({
 
   return (
     <div
-      className={`category ${categoryPopUp ? 'category-form-active' : ''}`}
+      className={`category ${
+        categoryPopUp ? 'category-form-active' : ''
+      } grid grid-cols-2 items-center p-6 rounded-lg shadow mt-4   hover:shadow-2xl`}
       style={{
         border: category.color + ' 5px solid',
         backgroundColor:
@@ -35,12 +36,19 @@ const Category: React.FC<CategoriesProps> = ({
       onClick={() => {
         console.log(current, category.id);
       }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.backgroundColor = category.color;
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.backgroundColor =
+          current === category.id ? category.color : 'transparent';
+      }}
     >
-      <div>{category!.name}</div>
-      <div className="category-buttons">
+      <div className="ml-4 align-middle">{category!.name}</div>
+      <div className="ml-auto flex justify-between gap-4 items-center">
         <RiEditCircleFill
           onClick={() => setCategoryPopUp(!categoryPopUp)}
-          className="category-button"
+          className="icon-button"
           size={30}
         />
 
@@ -53,7 +61,7 @@ const Category: React.FC<CategoriesProps> = ({
         />
         <TiDelete
           onClick={() => deleteCategory(category.id)}
-          className="category-button "
+          className="icon-button "
           size={40}
         />
       </div>
