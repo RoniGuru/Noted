@@ -91,12 +91,23 @@ class NoteDelete(generics.DestroyAPIView):
 
 
 class CreateUserView(generics.CreateAPIView):
-    # make sure not to create user that already exists by looking at all users
     queryset = User.objects.all()
-    # tells view what type of data 
     serializer_class = UserSerializer
-    #allow anyone to use this view
     permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        user = self.request.user #gives user object
+        return Note.objects.filter(user=user) # filter all Expenses by user
+    
+    
+
+class UpdateUserView(generics.UpdateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [AllowAny]
+
+    def perform_update(self, serializer):
+        instance = serializer.save()
 
 class DeleteUserView(generics.DestroyAPIView):
     queryset = User.objects.all()
@@ -105,7 +116,18 @@ class DeleteUserView(generics.DestroyAPIView):
 
 
 @api_view(['GET'])
-def color_choices(request):
+def colorChoices(request):
     choices = Category.COLOR_CHOICES
     data = [{'value': choice[0], 'display_name': choice[1]} for choice in choices]
     return Response(data)
+
+
+@api_view(['GET'])
+def getUserDetails(request):
+    user = request.user
+    if user.is_authenticated:
+        return Response({
+            'username': user.username,
+            "id": user.id
+        })
+    return Response({'error': 'Not authenticated'}, status=401)

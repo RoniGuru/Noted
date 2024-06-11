@@ -10,6 +10,7 @@ import Navbar from '../components/Navbar';
 import useColor from '../hooks/colorHook';
 import useCategory from '../hooks/categoryHooks';
 import useNote from '../hooks/noteHooks';
+import useUserHooks from '../hooks/userHook';
 
 function Home() {
   const [categoryPopUp, setCategoryPopUp] = useState<boolean>(false);
@@ -36,12 +37,14 @@ function Home() {
     updateNote,
   } = useNote();
 
+  const { user } = useUserHooks();
+
   const [searchCategories, setSearchCategories] = useState<string>('');
   const [searchNotes, setSearchNotes] = useState<string>('');
 
   return (
     <div className="font-mono">
-      <Navbar />
+      <Navbar user={user} />
       <div className="grid grid-cols-4 gap-4 mt-2 ml-3 mr-4">
         <div className="col-span-1  p-4 shadow-md bg-gray-400 rounded ">
           <div className="search mb-4  flex ">

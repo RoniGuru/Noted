@@ -16,12 +16,15 @@ const useNote = () => {
   };
 
   const createNote = async (title: string, category: number | null) => {
-    api.post('/base/notes/', { title, body: '', category }).then((res) => {
-      if (res.status === 201) {
-        const updatedNotes = [...notes, res.data];
-        setNotes(updatedNotes);
-      }
-    });
+    api
+      .post('/base/notes/', { title, body: '', category })
+      .then((res) => {
+        if (res.status === 201) {
+          const updatedNotes = [...notes, res.data];
+          setNotes(updatedNotes);
+        }
+      })
+      .catch((err) => alert(err));
   };
 
   const deleteNote = async (id: number) => {
@@ -49,7 +52,8 @@ const useNote = () => {
           );
           setNotes(updatedNotes);
         }
-      });
+      })
+      .catch((err) => alert(err));
   };
 
   const [currentNoteID, setCurrentNoteID] = useState<number | null>(null);
