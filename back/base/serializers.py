@@ -12,6 +12,16 @@ class UserSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(**validated_data)
         return user
     
+    def update(self, instance, validated_data):
+        instance.username = validated_data.get('username', instance.username)
+        password = validated_data.get('password', None)
+        
+        if password:
+            instance.set_password(password)
+        
+        instance.save()
+        return instance
+    
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -29,3 +39,5 @@ class NoteSerializers(serializers.ModelSerializer):
 class ColorChoiceSerializer(serializers.Serializer):
     value = serializers.CharField()
     display_name = serializers.CharField()
+
+

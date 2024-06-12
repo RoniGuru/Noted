@@ -2,7 +2,9 @@ import { useState } from 'react';
 import api from '../api';
 import { useNavigate } from 'react-router-dom';
 import { ACCESS_TOKEN, REFRESH_TOKEN } from '../constants';
-import { AxiosError, AxiosResponse } from 'axios';
+import { AxiosError } from 'axios';
+
+import { validatePassword } from '../functions/passwordVerify';
 
 interface FormTemplateProps {
   route: string;
@@ -12,47 +14,17 @@ interface FormTemplateProps {
 const FormTemplate: React.FC<FormTemplateProps> = ({ route, method }) => {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
   const [retypePassword, setRetypePassword] = useState<string>('');
   const navigate = useNavigate();
 
   const name = method === 'login' ? 'Login' : 'Register';
 
-  const validatePassword = (password: string): boolean => {
-    let errors: string[] = [];
-
-    if (password.length < 8) {
-      errors.push('Password must be at least 8 characters long');
-    }
-    if (!/[A-Z]/.test(password)) {
-      errors.push('Password must contain at least one uppercase letter');
-    }
-    if (!/[a-z]/.test(password)) {
-      errors.push('Password must contain at least one lowercase letter');
-    }
-    if (!/[0-9]/.test(password)) {
-      errors.push('Password must contain at least one number');
-    }
-    if (!/[!@#$%^&*]/.test(password)) {
-      errors.push('Password must contain at least one special character');
-    }
-
-    if (errors.length > 0) {
-      alert(errors.join('\n'));
-      return false;
-    }
-
-    return true;
-  };
-
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
     if (method === 'Register') {
-      if (password !== retypePassword) {
-        alert('Passwords do not match');
-        return;
-      }
-      if (!validatePassword(password)) {
+      if (!validatePassword(password, retypePassword)) {
         return;
       }
     }
@@ -70,7 +42,8 @@ const FormTemplate: React.FC<FormTemplateProps> = ({ route, method }) => {
       if (error.response?.status === 400) {
         alert(error.response.data.username);
       } else {
-        alert('Something went wrong');
+        alert(`${JSON.stringify(error.response.data)}`);
+        console.log(error);
       }
     }
   };
@@ -88,6 +61,16 @@ const FormTemplate: React.FC<FormTemplateProps> = ({ route, method }) => {
         onChange={(e) => setUsername(e.target.value)}
         placeholder="username"
       />
+
+      {method != 'login' ? (
+        <input
+          type="text"
+          className="form-input outline-none p-3"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="email"
+        />
+      ) : null}
       <input
         type="password"
         className="form-input outline-none p-3"

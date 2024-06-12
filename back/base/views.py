@@ -101,13 +101,7 @@ class CreateUserView(generics.CreateAPIView):
     
     
 
-class UpdateUserView(generics.UpdateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = [AllowAny]
 
-    def perform_update(self, serializer):
-        instance = serializer.save()
 
 class DeleteUserView(generics.DestroyAPIView):
     queryset = User.objects.all()
@@ -128,6 +122,21 @@ def getUserDetails(request):
     if user.is_authenticated:
         return Response({
             'username': user.username,
-            "id": user.id
+            "id": user.id,
+            
         })
     return Response({'error': 'Not authenticated'}, status=401)
+
+
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def update_user(request):
+    user = request.user
+    serializer = UserSerializer(user, data=request.data, partial=True)  # partial=True to allow partial updates
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

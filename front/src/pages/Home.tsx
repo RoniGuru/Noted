@@ -37,14 +37,14 @@ function Home() {
     updateNote,
   } = useNote();
 
-  const { user } = useUserHooks();
+  const { user, updateUser, deleteUser } = useUserHooks();
 
   const [searchCategories, setSearchCategories] = useState<string>('');
   const [searchNotes, setSearchNotes] = useState<string>('');
 
   return (
     <div className="font-mono">
-      <Navbar user={user} />
+      <Navbar user={user} updateUser={updateUser} deleteUser={deleteUser} />
       <div className="grid grid-cols-4 gap-4 mt-2 ml-3 mr-4">
         <div className="col-span-1  p-4 shadow-md bg-gray-400 rounded ">
           <div className="search mb-4  flex ">
