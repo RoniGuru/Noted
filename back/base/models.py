@@ -3,16 +3,9 @@ from django.contrib.auth.models import User
 
 
 class Category(models.Model):
-    COLOR_CHOICES = [
-    ('red', 'Red'),
-    ('blue', 'Blue'),
-    ('grey', 'Grey'),
-    ('green', 'Green'),
-    ('yellow', 'Yellow'),
-    ('purple', 'Purple'),
-]
+    
     name = models.CharField(max_length=50)
-    color = models.CharField(max_length=50, choices=COLOR_CHOICES)
+    color = models.CharField(max_length=50)
     user = models.ForeignKey(User, on_delete=models.CASCADE,related_name="categories")
 
     def __str__(self):

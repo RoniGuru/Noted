@@ -133,7 +133,7 @@ def getUserDetails(request):
 @permission_classes([IsAuthenticated])
 def update_user(request):
     user = request.user
-    serializer = UserSerializer(user, data=request.data, partial=True)  # partial=True to allow partial updates
+    serializer = UserSerializer(user, data=request.data)  # partial=True to allow partial updates
 
     if serializer.is_valid():
         serializer.save()

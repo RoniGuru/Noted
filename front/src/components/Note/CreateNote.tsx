@@ -1,24 +1,27 @@
 import React, { useState } from 'react';
 import { TiDelete } from 'react-icons/ti';
 import { categoryIF } from '../../utils/interfaces';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../state/store';
+import { createNote } from '../../state/note';
 
 interface CreateNoteProps {
   categories: categoryIF[];
   trigger: boolean;
   setTrigger: React.Dispatch<React.SetStateAction<boolean>>;
-  createNote: (title: string, category: number | null) => void;
 }
 
 const CreateNote: React.FC<CreateNoteProps> = ({
   categories,
   trigger,
   setTrigger,
-  createNote,
 }) => {
+  const dispatch = useDispatch<AppDispatch>();
+
   const [title, setTitle] = useState<string>('');
   const [category, setCategory] = useState<string>('none');
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
 
     let convertedCategory: number | null = null;
@@ -26,7 +29,9 @@ const CreateNote: React.FC<CreateNoteProps> = ({
       convertedCategory = Number(category);
     }
 
-    createNote(title, convertedCategory);
+    dispatch(
+      createNote({ id: 0, title: title, body: '', category: convertedCategory })
+    );
 
     setTitle('');
     setCategory('none');

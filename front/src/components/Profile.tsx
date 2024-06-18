@@ -1,97 +1,69 @@
 import React from 'react';
-import { UserIF } from '../hooks/userHook';
+
+import { AppDispatch, RootState } from '../state/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteUser, updateUser } from '../state/user';
+import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { validatePassword } from '../functions/passwordVerify';
-import { TiDelete } from 'react-icons/ti';
-interface ProfileProps {
-  popUp: boolean;
-  setPopUp: React.Dispatch<React.SetStateAction<boolean>>;
-  user: UserIF | null;
-  updateUser: (user: UserIF) => void;
-  deleteUser: (id: number) => void;
-}
 
-const Profile: React.FC<ProfileProps> = ({
-  popUp,
-  setPopUp,
-  user,
-  updateUser,
-  deleteUser,
-}) => {
-  const [newUsername, setNewUsername] = useState<string>('');
-  const [newEmail, setNewEmail] = useState<string>('');
-  const [newPassword, setNewPassword] = useState<string>('');
-  const [retypeNewPassword, setRetypeNewPassword] = useState<string>('');
+const Profile = () => {
+  const user = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: any) => {
+  const [username, setUsername] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+
+  const handleUpdate = (e: any) => {
     e.preventDefault();
-    if (!validatePassword(newPassword, retypeNewPassword)) {
-      return;
-    }
-    if (user) {
-      updateUser({
-        id: user.id,
-        username: newUsername,
 
-        password: newPassword,
-      });
+    if (user.id) {
+      if (username === '') {
+        alert('Please enter a username');
+        return;
+      }
+      dispatch(updateUser({ id: user.id, username, password }));
     }
 
-    setPopUp(false);
+    setPassword('');
+  };
+
+  const handleDelete = (e: any) => {
+    e.preventDefault();
+    if (user && user.id) {
+      dispatch(deleteUser(user.id));
+      navigate('/logout');
+    } else {
+      console.error('User ID is missing or invalid');
+      // Optionally handle the error or show a message to the user
+    }
   };
 
   return (
     <>
-      {popUp ? (
+      <div className="create-form-background flex">
         <div
-          className="create-form-background flex"
-          onClick={() => setPopUp(false)}
+          className="create-form flex flex-col h-3/4 w-1/4 p-10 gap-2"
+          onClick={(e) => e.stopPropagation()}
         >
-          <form
-            className="create-form flex flex-col h-3/4 w-1/4 p-10 gap-2"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <TiDelete
-              onClick={() => setPopUp(false)}
-              size={40}
-              className="icon-button  ml-auto"
-            />
-            <label htmlFor="">username</label>
-            <input
-              type="text"
-              id="username"
-              placeholder={user?.username}
-              value={newUsername}
-              onChange={(e) => setNewUsername(e.target.value)}
-            />
-
-            <label htmlFor="">password</label>
-            <input
-              type="password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-            />
-            <label htmlFor="">retype password</label>
-            <input
-              type="password"
-              value={retypeNewPassword}
-              onChange={(e) => setRetypeNewPassword(e.target.value)}
-            />
-            <button
-              onClick={handleSubmit}
-              className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded mt-4 ml-auto"
-            >
-              update
-            </button>
-            <button
-              className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded mt-4 ml-auto"
-              onClick={() => user && deleteUser(user?.id)}
-            >
-              delete user
-            </button>
-          </form>
+          {user.username}
+          <input
+            type="text"
+            name=""
+            id=""
+            onChange={(e) => setUsername(e.target.value)}
+            value={username}
+          />
+          <input
+            type="password"
+            onChange={(e) => setPassword(e.target.value)}
+            value={password}
+            placeholder="password"
+          />
+          <button onClick={handleUpdate}>update user</button>
+          <button onClick={handleDelete}>delete user</button>
         </div>
-      ) : null}
+      </div>
     </>
   );
 };

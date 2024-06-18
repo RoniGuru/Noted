@@ -4,6 +4,9 @@ import Register from './pages/Register';
 import NotFound from './pages/NotFound';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute';
+import { Provider } from 'react-redux';
+import { store } from './state/store.ts';
+import UserProfile from './pages/UserProfile.tsx';
 
 function App() {
   function Logout() {
@@ -16,18 +19,21 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route
-            path="/"
+            path="*"
             element={
               <ProtectedRoute>
-                <Home />
+                <Provider store={store}>
+                  <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/profile" element={<UserProfile />} />
+                  </Routes>
+                </Provider>
               </ProtectedRoute>
             }
           />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/logout" element={<Logout />} />
-
-          <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
     </>

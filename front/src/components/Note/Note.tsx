@@ -1,30 +1,32 @@
-import React, { useEffect } from 'react';
-import { NoteIF, categoryIF } from '../../utils/interfaces';
+import { useEffect, useState } from 'react';
+import { NoteIF } from '../../utils/interfaces';
 
 import { TiDelete } from 'react-icons/ti';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../state/store';
+
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../state/store';
+import { updateNote } from '../../state/note';
 
 interface NoteProps {
   note: NoteIF;
-  categories: categoryIF[];
-  noteDelete: (id: number) => void;
-
   setCurrentNoteID: React.Dispatch<React.SetStateAction<number | null>>;
-  getNotes: () => void;
   setCurrentCategoryID: React.Dispatch<React.SetStateAction<number | null>>;
-  updateNote: (note: NoteIF) => void;
 }
 
 const Note: React.FC<NoteProps> = ({
   note,
-  categories,
-  noteDelete,
+
   setCurrentNoteID,
   setCurrentCategoryID,
-  updateNote,
 }) => {
-  const [title, setTitle] = React.useState<string>('');
-  const [body, setBody] = React.useState<string>('');
-  const [category, setCategory] = React.useState<number | undefined | null>(
+  const categories = useSelector((state: RootState) => state.category);
+  const dispatch = useDispatch<AppDispatch>();
+
+  const [title, setTitle] = useState<string>('');
+  const [body, setBody] = useState<string>('');
+  const [category, setCategory] = useState<number | undefined | null>(
     note.category
   );
 
@@ -38,12 +40,14 @@ const Note: React.FC<NoteProps> = ({
     const updatedBody = body || note.body;
     const updatedCategory = category == 0 ? null : category || note.category;
 
-    updateNote({
-      id: note.id,
-      title: updatedTitle,
-      body: updatedBody,
-      category: updatedCategory,
-    });
+    dispatch(
+      updateNote({
+        id: note.id,
+        title: updatedTitle,
+        body: updatedBody,
+        category: updatedCategory,
+      })
+    );
 
     setTitle(updatedTitle);
     setBody(updatedBody);
@@ -70,9 +74,7 @@ const Note: React.FC<NoteProps> = ({
         <TiDelete
           size={30}
           className="icon-button"
-          onClick={() => {
-            noteDelete(note.id), setCurrentNoteID(null);
-          }}
+          onClick={() => setCurrentNoteID(null)}
         />
       </div>
       <div className="w-full flex justify-between items-center mt-2">

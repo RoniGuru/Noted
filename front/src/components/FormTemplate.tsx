@@ -14,7 +14,7 @@ interface FormTemplateProps {
 const FormTemplate: React.FC<FormTemplateProps> = ({ route, method }) => {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
+
   const [retypePassword, setRetypePassword] = useState<string>('');
   const navigate = useNavigate();
 
@@ -32,6 +32,7 @@ const FormTemplate: React.FC<FormTemplateProps> = ({ route, method }) => {
     try {
       const res = await api.post(route, { username, password });
       if (method === 'login') {
+        console.log('token');
         localStorage.setItem(ACCESS_TOKEN, res.data.access);
         localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
         navigate('/');
@@ -62,15 +63,6 @@ const FormTemplate: React.FC<FormTemplateProps> = ({ route, method }) => {
         placeholder="username"
       />
 
-      {method != 'login' ? (
-        <input
-          type="text"
-          className="form-input outline-none p-3"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="email"
-        />
-      ) : null}
       <input
         type="password"
         className="form-input outline-none p-3"

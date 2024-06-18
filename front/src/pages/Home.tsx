@@ -1,50 +1,58 @@
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import Navbar from '../components/Navbar';
+
+import { useSelector, useDispatch } from 'react-redux';
+import { AppDispatch, RootState } from '../state/store';
+
+import { getUser } from '../state/user';
+import { getCategories } from '../state/category';
+import { getNotes } from '../state/note';
 
 import CreateCategory from '../components/Category/CreateCategory';
-import Note from '../components/Note/Note';
-import CreateNote from '../components/Note/CreateNote';
-
 import Category from '../components/Category/Category';
+import { categoryIF } from '../utils/interfaces';
+
+import CreateNote from '../components/Note/CreateNote';
 import NoteHeader from '../components/Note/NoteHeader';
-import Navbar from '../components/Navbar';
-import useColor from '../hooks/colorHook';
-import useCategory from '../hooks/categoryHooks';
-import useNote from '../hooks/noteHooks';
-import useUserHooks from '../hooks/userHook';
+import Note from '../components/Note/Note';
+import { NoteIF } from '../utils/interfaces';
 
 function Home() {
+  const user = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    dispatch(getUser());
+    dispatch(getCategories());
+    dispatch(getNotes());
+  }, [dispatch]);
+
   const [categoryPopUp, setCategoryPopUp] = useState<boolean>(false);
   const [notePopUp, setNotePopUp] = useState<boolean>(false);
 
-  const { colorChoices } = useColor();
-  const {
-    categories,
-    getCategories,
-    currentCategory,
-    setCurrentCategoryID,
-    currentCategoryID,
-    updateCategory,
-    deleteCategory,
-    createCategory,
-  } = useCategory();
-  const {
-    notes,
-    getNotes,
-    currentNote,
-    setCurrentNoteID,
-    createNote,
-    deleteNote,
-    updateNote,
-  } = useNote();
+  const categories = useSelector((state: RootState) => state.category);
+  const notes = useSelector((state: RootState) => state.note);
 
-  const { user, updateUser, deleteUser } = useUserHooks();
+  const [currentCategoryID, setCurrentCategoryID] = useState<number | null>(
+    null
+  );
+  const currentCategory: categoryIF | undefined = useMemo(
+    () => categories.find((category) => category.id === currentCategoryID),
+    [currentCategoryID, categories]
+  );
+
+  const [currentNoteID, setCurrentNoteID] = useState<number | null>(null);
+  const currentNote: NoteIF | undefined = useMemo(
+    () => notes.find((note) => note.id === currentNoteID),
+    [currentNoteID, notes]
+  );
 
   const [searchCategories, setSearchCategories] = useState<string>('');
   const [searchNotes, setSearchNotes] = useState<string>('');
 
   return (
-    <div className="font-mono">
-      <Navbar user={user} updateUser={updateUser} deleteUser={deleteUser} />
+    <div>
+      <Navbar user={user} />
       <div className="grid grid-cols-4 gap-4 mt-2 ml-3 mr-4">
         <div className="col-span-1  p-4 shadow-md bg-gray-400 rounded ">
           <div className="search mb-4  flex ">
@@ -60,13 +68,11 @@ function Home() {
             >
               Create Category
             </button>
+            <CreateCategory
+              trigger={categoryPopUp}
+              setTrigger={setCategoryPopUp}
+            />
           </div>
-          <CreateCategory
-            trigger={categoryPopUp}
-            setTrigger={setCategoryPopUp}
-            colorChoices={colorChoices}
-            createCategory={createCategory}
-          />
           <div className="scroll">
             <div
               key="none"
@@ -86,24 +92,15 @@ function Home() {
             >
               <div className="ml-4">all</div>
             </div>
-
             {categories
               .filter((category) => category.name.includes(searchCategories))
-              .map((category, index) => (
+              .map((category) => (
                 <div
                   onClick={() => setCurrentCategoryID(category.id)}
-                  key={index}
+                  key={category.id}
                   className="w-11/12"
                 >
-                  <Category
-                    key={index}
-                    colorChoices={colorChoices}
-                    deleteCategory={deleteCategory}
-                    category={category}
-                    getCategories={getCategories}
-                    current={currentCategoryID}
-                    updateCategory={updateCategory}
-                  />
+                  <Category category={category} current={currentCategoryID} />
                 </div>
               ))}
           </div>
@@ -126,10 +123,8 @@ function Home() {
               trigger={notePopUp}
               setTrigger={setNotePopUp}
               categories={categories}
-              createNote={createNote}
             />
           </div>
-
           <div className="notes scroll">
             {currentCategory
               ? notes
@@ -144,7 +139,6 @@ function Home() {
                       category={categories.find(
                         (item) => item.id === note.category
                       )}
-                      noteDelete={deleteNote}
                       key={note.id}
                       current={currentNote?.id === note.id ? true : false}
                       setCurrentNoteID={setCurrentNoteID}
@@ -158,7 +152,6 @@ function Home() {
                       category={categories.find(
                         (item) => item.id === note.category
                       )}
-                      noteDelete={deleteNote}
                       key={note.id}
                       current={currentNote?.id === note.id ? true : false}
                       setCurrentNoteID={setCurrentNoteID}
@@ -170,13 +163,9 @@ function Home() {
           {currentNote ? (
             <Note
               note={currentNote}
-              categories={categories}
-              noteDelete={deleteNote}
-              getNotes={getNotes}
               key={currentNote.id}
               setCurrentNoteID={setCurrentNoteID}
               setCurrentCategoryID={setCurrentCategoryID}
-              updateNote={updateNote}
             />
           ) : null}
         </div>

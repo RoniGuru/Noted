@@ -14,3 +14,8 @@ export interface NoteIF {
   body: string;
   category: number | null;
 }
+export interface UserIF {
+  id: number | null;
+  username: string;
+  password: string;
+}

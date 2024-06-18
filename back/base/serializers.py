@@ -21,6 +21,11 @@ class UserSerializer(serializers.ModelSerializer):
         
         instance.save()
         return instance
+   
+    
+
+    
+  
     
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -36,8 +41,6 @@ class NoteSerializers(serializers.ModelSerializer):
         extra_kwargs = {"user": {"read_only":True}} # can only see author not set them
 
 
-class ColorChoiceSerializer(serializers.Serializer):
-    value = serializers.CharField()
-    display_name = serializers.CharField()
+
 
 

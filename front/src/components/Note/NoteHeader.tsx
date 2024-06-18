@@ -1,22 +1,25 @@
 import { NoteIF, categoryIF } from '../../utils/interfaces';
-
 import { TiDelete } from 'react-icons/ti';
+
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../state/store';
+import { deleteNote } from '../../state/note';
 
 interface NoteProps {
   note: NoteIF;
   category: categoryIF | undefined;
-  noteDelete: (id: number) => void;
   current: boolean;
   setCurrentNoteID: React.Dispatch<React.SetStateAction<number | null>>;
 }
 
 const NoteHeader: React.FC<NoteProps> = ({
   note,
-  noteDelete,
   category,
   current,
   setCurrentNoteID,
 }) => {
+  const dispatch = useDispatch<AppDispatch>();
+
   return (
     <div
       key={note.id}
@@ -32,9 +35,7 @@ const NoteHeader: React.FC<NoteProps> = ({
       <TiDelete
         size={30}
         className="icon-button"
-        onClick={() => {
-          noteDelete(note.id), setCurrentNoteID(null);
-        }}
+        onClick={() => dispatch(deleteNote(note))}
       />
     </div>
   );

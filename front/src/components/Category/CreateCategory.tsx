@@ -1,34 +1,28 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
-import { ColorChoice } from '../../utils/interfaces';
+import { colors } from '../../utils/colors';
 import { TiDelete } from 'react-icons/ti';
-import '../../styles/CreateCategory.css';
+
+import { AppDispatch } from '../../state/store';
+import { useDispatch } from 'react-redux';
+import { createCategory } from '../../state/category';
 
 interface CreateCategoryProps {
   trigger: boolean;
   setTrigger: React.Dispatch<React.SetStateAction<boolean>>;
-  colorChoices: ColorChoice[];
-  createCategory: (categoryName: string, categoryColor: string) => void;
 }
 
 const CreateCategory: React.FC<CreateCategoryProps> = ({
   trigger,
   setTrigger,
-  colorChoices,
-  createCategory,
 }) => {
+  const dispatch = useDispatch<AppDispatch>();
   const [name, setName] = useState<string>('');
-  const [color, setColor] = useState<string>('');
-
-  useEffect(() => {
-    if (colorChoices.length > 0) {
-      setColor(colorChoices[0].value);
-    }
-  }, [colorChoices]);
+  const [color, setColor] = useState<string>(colors[0]);
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    createCategory(name, color);
+    dispatch(createCategory({ id: 0, name, color: color }));
     setTrigger(false);
   };
 
@@ -60,9 +54,9 @@ const CreateCategory: React.FC<CreateCategoryProps> = ({
               className="py-2 px-4 rounded w-full mt-6"
               onChange={(e) => setColor(e.target.value)}
             >
-              {colorChoices.map((choice) => (
-                <option key={choice.value} value={choice.value}>
-                  {choice.display_name}
+              {colors.map((color) => (
+                <option key={color} value={color}>
+                  {color}
                 </option>
               ))}
             </select>

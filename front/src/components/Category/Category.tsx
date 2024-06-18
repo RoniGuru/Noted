@@ -1,27 +1,21 @@
 import { useState } from 'react';
-import { categoryIF, ColorChoice } from '../../utils/interfaces';
-
+import { categoryIF } from '../../utils/interfaces';
+import { AppDispatch } from '../../state/store';
+import { useDispatch } from 'react-redux';
 import EditCategory from './EditCategory';
 import { TiDelete } from 'react-icons/ti';
 import { RiEditCircleFill } from 'react-icons/ri';
+import { deleteCategory } from '../../state/category';
 
 interface CategoriesProps {
   category: categoryIF;
-  deleteCategory: (id: number) => void;
-  colorChoices: ColorChoice[];
-  getCategories: () => void;
   current: number | null;
-  updateCategory: (updatedCategory: categoryIF) => void;
 }
 
-const Category: React.FC<CategoriesProps> = ({
-  category,
-  deleteCategory,
-  colorChoices,
-  current,
-  updateCategory,
-}) => {
+const Category: React.FC<CategoriesProps> = ({ category, current }) => {
   const [categoryPopUp, setCategoryPopUp] = useState<boolean>(false);
+
+  const dispatch = useDispatch<AppDispatch>();
 
   return (
     <div
@@ -51,16 +45,14 @@ const Category: React.FC<CategoriesProps> = ({
           className="icon-button"
           size={30}
         />
-
         <EditCategory
           trigger={categoryPopUp}
           setTrigger={setCategoryPopUp}
-          colorChoices={colorChoices}
           category={category}
-          categoryUpdate={updateCategory}
         />
+
         <TiDelete
-          onClick={() => deleteCategory(category.id)}
+          onClick={() => dispatch(deleteCategory(category))}
           className="icon-button "
           size={40}
         />

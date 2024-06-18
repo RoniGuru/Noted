@@ -1,23 +1,27 @@
 import React from 'react';
-import { categoryIF, ColorChoice } from '../../utils/interfaces';
+import { categoryIF } from '../../utils/interfaces';
 import { useState } from 'react';
+import { colors } from '../../utils/colors';
+import { TiDelete } from 'react-icons/ti';
+
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../state/store';
+import { updateCategory } from '../../state/category';
 
 interface EditCategoryProps {
   trigger: boolean;
   setTrigger: React.Dispatch<React.SetStateAction<boolean>>;
-  colorChoices: ColorChoice[];
   category: categoryIF | undefined;
-  categoryUpdate: (updatedCategory: categoryIF) => void;
 }
 const EditCategory: React.FC<EditCategoryProps> = ({
   trigger,
   setTrigger,
-  colorChoices,
   category,
-  categoryUpdate,
 }) => {
-  const [name, setName] = useState<string>('');
+  const [name, setName] = useState<string>(category!.name);
   const [color, setColor] = useState<string>('');
+
+  const dispatch = useDispatch<AppDispatch>();
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
@@ -30,7 +34,7 @@ const EditCategory: React.FC<EditCategoryProps> = ({
       color: updateColor,
     };
 
-    categoryUpdate(UpdatedCategory);
+    dispatch(updateCategory(UpdatedCategory));
 
     setTrigger(false);
   };
@@ -39,33 +43,45 @@ const EditCategory: React.FC<EditCategoryProps> = ({
     <>
       {trigger ? (
         <div
-          className="category-form-background"
+          className="create-form-background"
           onClick={() => setTrigger(false)}
         >
-          <form className="category-form" onClick={(e) => e.stopPropagation()}>
-            <button onClick={() => setTrigger(false)}>close</button>
+          <form
+            className="create-form  shadow-md rounded px-8 pt-6 pb-8 mb-4 "
+            onClick={(e) => e.stopPropagation()}
+          >
+            <TiDelete
+              onClick={() => setTrigger(false)}
+              size={40}
+              className="icon-button  ml-auto"
+            />
             <input
-              className="form-input"
+              className=" mt-6 shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               type="text"
               name="name"
-              value={name || category!.name}
+              value={name}
               onChange={(e) => setName(e.target.value)}
             />
             <select
-              className="form-input"
+              className="py-2 px-4 rounded w-full mt-6"
               id="color"
               name="color"
               value={color || category!.color}
               onChange={(e) => setColor(e.target.value)}
             >
-              {colorChoices.map((choice) => (
-                <option key={choice.value} value={choice.value}>
-                  {choice.display_name}
+              {colors.map((color) => (
+                <option key={color} value={color}>
+                  {color}
                 </option>
               ))}
             </select>
 
-            <button onClick={handleSubmit}>edit category</button>
+            <button
+              onClick={handleSubmit}
+              className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l mt-6  "
+            >
+              edit category
+            </button>
           </form>
         </div>
       ) : null}
