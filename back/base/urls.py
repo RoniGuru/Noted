@@ -3,7 +3,7 @@ from . import views
 
 urlpatterns = [
 
-   path('color-choices/', views.colorChoices, name='color-choices'),
+  
    path("categories/", views.CategoryListCreate.as_view(), name="categories-list"),
    path("categories/update/<int:pk>/", views.CategoryUpdate.as_view(), name="update-category"),
    path("categories/delete/<int:pk>/", views.CategoryDelete.as_view(), name="delete-category"),

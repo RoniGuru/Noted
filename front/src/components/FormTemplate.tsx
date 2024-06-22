@@ -32,19 +32,19 @@ const FormTemplate: React.FC<FormTemplateProps> = ({ route, method }) => {
     try {
       const res = await api.post(route, { username, password });
       if (method === 'login') {
-        console.log('token');
         localStorage.setItem(ACCESS_TOKEN, res.data.access);
         localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
         navigate('/');
       } else {
         navigate('/login');
       }
-    } catch (error: AxiosError | any) {
-      if (error.response?.status === 400) {
-        alert(error.response.data.username);
+    } catch (error: any) {
+      if (error.response.status === 401) {
+        alert('Invalid username or password');
+      } else if (error.response.status === 400) {
+        alert('Username already exists');
       } else {
-        alert(`${JSON.stringify(error.response.data)}`);
-        console.log(error);
+        alert(error.response.data);
       }
     }
   };

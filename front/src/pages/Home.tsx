@@ -19,19 +19,26 @@ import { NoteIF } from '../utils/interfaces';
 
 function Home() {
   const user = useSelector((state: RootState) => state.user);
+  localStorage.setItem('user', JSON.stringify(user));
   const dispatch = useDispatch<AppDispatch>();
 
+  const categories = useSelector((state: RootState) => state.category);
+  const notes = useSelector((state: RootState) => state.note);
+
   useEffect(() => {
-    dispatch(getUser());
-    dispatch(getCategories());
-    dispatch(getNotes());
+    if (!JSON.parse(localStorage.getItem('user') as string).id) {
+      dispatch(getUser());
+    }
+    if (categories.length == 0) {
+      dispatch(getCategories());
+    }
+    if (notes.length == 0) {
+      dispatch(getNotes());
+    }
   }, [dispatch]);
 
   const [categoryPopUp, setCategoryPopUp] = useState<boolean>(false);
   const [notePopUp, setNotePopUp] = useState<boolean>(false);
-
-  const categories = useSelector((state: RootState) => state.category);
-  const notes = useSelector((state: RootState) => state.note);
 
   const [currentCategoryID, setCurrentCategoryID] = useState<number | null>(
     null

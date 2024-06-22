@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from.models import Note, Category
+from django.contrib.auth.password_validation import validate_password
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -12,20 +13,6 @@ class UserSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(**validated_data)
         return user
     
-    def update(self, instance, validated_data):
-        instance.username = validated_data.get('username', instance.username)
-        password = validated_data.get('password', None)
-        
-        if password:
-            instance.set_password(password)
-        
-        instance.save()
-        return instance
-   
-    
-
-    
-  
     
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -43,4 +30,12 @@ class NoteSerializers(serializers.ModelSerializer):
 
 
 
+class PasswordChangeSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
 
+    def validate_old_password(self, value):
+        user = self.context['request'].user
+        if not user.check_password(value):
+            raise serializers.ValidationError("Old password is not correct")
+        return value

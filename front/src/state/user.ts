@@ -17,17 +17,35 @@ export const getUser = createAsyncThunk('user/getUser', async () => {
   }
 });
 
-export const updateUser = createAsyncThunk(
+export const updateUsername = createAsyncThunk(
   'user/updateUser',
   async (user: UserIF) => {
     try {
-      await api.put<UserIF>('base/user/update/', {
+      await api.patch<UserIF>(`base/user/update/${user.id}/`, {
         username: user.username,
-        password: user.password,
       });
       return user;
     } catch (err) {
       console.error('Error updating user:', err); // Log the error for debugging purposes
+      throw err; // Rethrow the error so that createAsyncThunk can handle it
+    }
+  }
+);
+interface passwordsIF {
+  oldPassword: string;
+  newPassword: string;
+}
+export const updatePassword = createAsyncThunk(
+  'user/updatePassword',
+  async (passwords: passwordsIF) => {
+    const { oldPassword, newPassword } = passwords;
+    try {
+      await api.patch<UserIF>(`base/user/change-password/`, {
+        old_password: oldPassword,
+        new_password: newPassword,
+      });
+    } catch (err) {
+      console.error('Error updating password:', err); // Log the error for debugging purposes
       throw err; // Rethrow the error so that createAsyncThunk can handle it
     }
   }
@@ -57,16 +75,20 @@ export const userSlice = createSlice({
         state.username = action.payload.username;
         state.password = '';
       })
-      .addCase(updateUser.fulfilled, (state, action: PayloadAction<UserIF>) => {
-        state.id = action.payload.id;
-        state.username = action.payload.username;
-        state.password = '';
-      })
+      .addCase(
+        updateUsername.fulfilled,
+        (state, action: PayloadAction<UserIF>) => {
+          state.id = action.payload.id;
+          state.username = action.payload.username;
+          state.password = '';
+        }
+      )
       .addCase(deleteUser.fulfilled, (state, action: PayloadAction<UserIF>) => {
         state.id = action.payload.id;
         state.username = action.payload.username;
         state.password = action.payload.password;
-      });
+      })
+      .addCase(updatePassword.fulfilled, () => {});
   },
 });
 
